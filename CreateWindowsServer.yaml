@@ -1,0 +1,46 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Create Resource Group
+      azure_rm_resourcegroup:
+        name: "{{ rgname }}"
+        location: westeurope
+
+    - name: Create a network interface
+      azure_rm_networkinterface:
+        name: "{{ nicname }}"
+        resource_group: "{{ rgname }}"
+        virtual_network: "{{ vnet }}"
+        create_with_security_group: False
+        subnet_name: "{{ subnet }}"
+        ip_configurations:
+          - name: default
+            public_ip_address_name: "{{ webserver2pip }}"
+
+    - name: Creating the VM
+      azure_rm_virtualmachine:
+        resource_group: "{{ rgname }}"
+        name: "{{ vmname }}"
+        admin_username: "{{ username }}"
+        admin_password: "{{ password }}"
+        managed_disk_type: StandardSSD_LRS
+        data_disks:
+          - lun: 0
+            disk_size_gb: 100
+            managed_disk_type: StandardSSD_LRS
+        os_type: Windows
+        network_interfaces: "{{ nicname }}"
+        image:
+          offer: WindowsServer
+          publisher: MicrosoftWindowsServer
+          sku: 2019-Datacenter
+          version: latest
+        vm_size: "{{ size }}"
+        tags:
+          OS: Windows
+        winrm:
+          - protocol: http
+
+
+

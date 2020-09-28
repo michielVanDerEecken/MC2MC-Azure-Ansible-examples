@@ -1,0 +1,33 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Create Resource Group
+      azure_rm_resourcegroup:
+        name: "{{ rgname }}"
+        location: westeurope
+
+    - name: Create a virtual network
+      azure_rm_virtualnetwork:
+        resource_group: "{{ rgname }}"
+        name: "{{ vnetname }}"
+        address_prefixes_cidr:
+            - "{{ adressprefix }}"
+        dns_servers:
+            - "8.8.8.8"
+        tags:
+            environment: "{{ env }}"
+
+    - name: Create Network Security Group "{{ nsg1 }}"
+      azure_rm_securitygroup:
+          resource_group: "{{ rgname }}"
+          name: "{{ nsg1 }}"
+
+    - name: Create Subnet "{{ subnet1 }}"
+      azure_rm_subnet:
+         resource_group: "{{ rgname }}"
+         virtual_network_name: "{{ vnetname }}"
+         name: "{{ subnet1 }}"
+         address_prefix_cidr: "{{ subnetip1 }}"
+         security_group: "{{ nsg1 }}"
+

@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Create Resource Group
+    azure_rm_resourcegroup:
+      name: "{{ rgname }}"
+      location: northeurope
+      tags:
+          environment: "{{ env }}"

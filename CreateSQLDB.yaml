@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Create Resource Group
+      azure_rm_resourcegroup:
+        name: "{{ rgname }}"
+        location: westeurope
+
+    - name: Create (or update) SQL Server
+      azure_rm_sqlserver:
+        resource_group: "{{ rgname }}"
+        name: "{{ sqlservername }}"
+        location: westeurope
+        admin_username: "{{ adminuser }}"
+        admin_password: "{{ adminpass }}"
+        tags:
+          environment: "{{ env }}"
+
+    - name: Create (or update) SQL Database
+      azure_rm_sqldatabase:
+        resource_group: "{{ rgname }}"
+        server_name: "{{ sqlservername }}"
+        name: "{{ dbname }}"
+        location: westeurope
+        tags:
+          environment: "{{ env }}"
+
