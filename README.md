@@ -1,0 +1,1 @@
+# MC2MC-Azure-Ansible-examples
